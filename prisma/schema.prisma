@@ -1,0 +1,104 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  emailVerified Boolean
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
+
+  username        String?
+  displayUsername String?
+  groups          Group[]
+  quizzes         Quiz[]
+
+  isManager Boolean
+
+  @@unique([username])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Group {
+  id      Int    @id @default(autoincrement())
+  name    String
+  users   User[]
+  quizzes Quiz[]
+
+  @@unique([name])
+}
+
+model Quiz {
+  id        Int        @id @default(autoincrement())
+  name      String
+  questions Question[]
+  groups    Group[]
+  users     User[]
+  ownedBy   String
+
+  @@unique([name])
+}
+
+model Question {
+  id     Int    @id @default(autoincrement())
+  type   Int
+  data   String
+  Quiz   Quiz?  @relation(fields: [quizId], references: [id])
+  quizId Int?
+}

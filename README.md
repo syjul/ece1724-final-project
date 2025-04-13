@@ -1,2 +1,1 @@
-# ece1724-final-project
-Final Project for ECE1724
+# Final Project Report:

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Quiz" ALTER COLUMN "ownedBy" SET DATA TYPE TEXT;
