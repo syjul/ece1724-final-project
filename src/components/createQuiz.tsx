@@ -4,13 +4,33 @@ import Card from "@/components/ui/card"
 import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import QuestionForm from "./questionForm";
-import { createQuizWithQuestions } from "@/lib/actions"
+import { createQuizWithQuestions, editQuizWithQuestions } from "@/lib/actions"
+import { Prisma } from "@prisma/client";
 
+interface CreateQuizProps {
+    quiz?: Prisma.Quiz,
+}
 
-export default function CreateQuiz() {
+export default function CreateQuiz({quiz}:CreateQuizProps) {
     const [questions, setQuestions] = useState([])
     const [saveData, setSaveData] = useState([])
     const [send, setSend] = useState(false)
+    const [timeVal, setTimeVal] = useState("")
+
+    useEffect(()=>{
+        if (quiz) {
+            setQuestions(quiz.questions)
+            for(let i = 0; i < quiz.questions.length; i++) {
+                console.log(quiz.questions)
+            }
+            if (quiz.expiresAt) {
+                let tv=new Date( quiz.expiresAt?.getTime() - ( quiz.expiresAt?.getTimezoneOffset() * 60000 )).toISOString();
+                console.log(tv)
+                tv = tv.slice(0,tv.length-1)
+                setTimeVal(tv)
+            }
+        }
+    },[quiz])
     
     const addQuestion = () => {
         let data = {id:0,text:"",choices:[]}
@@ -19,7 +39,6 @@ export default function CreateQuiz() {
         }
         questions.push(data)
         setQuestions([...questions])
-        console.log("Added choice: " + questions[1])
     }
 
     const beginSend = () => {
@@ -34,11 +53,16 @@ export default function CreateQuiz() {
         }
         data["data"] = formProc
         saveData.push(data)
-        console.log("Added to SD: " + JSON.stringify(data))
+
         setSaveData(saveData)
         if (saveData.length >= questions.length) {
             const name = document.getElementById("quizName")?.value
-            createQuizWithQuestions(name,saveData)
+            const time = document.getElementById("quizTime")?.value
+            if (!quiz) {
+                createQuizWithQuestions(name,time,saveData)
+            } else {
+                editQuizWithQuestions(quiz.id,name,time,saveData)
+            }
         }
     }
 
@@ -53,7 +77,18 @@ export default function CreateQuiz() {
                     </label>
                 </div>
                 <div className="mt-2">
-                    <input id="quizName" name="quizName" type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></input>
+                    <input defaultValue={quiz?quiz.name:""} id="quizName" name="quizName" type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></input>
+                </div>
+            </div>
+
+            <div className="py-4">
+                <div className="flex items-center justify-between">
+                    <label htmlFor={"quizTime"} className="block text-sm/6 font-medium text-gray-900">
+                        Due By
+                    </label>
+                </div>
+                <div className="mt-2">
+                    <input defaultValue={quiz?.expiresAt?timeVal:""} id="quizTime" name="quizTime" type="datetime-local" className=""></input>
                 </div>
             </div>
 
@@ -64,7 +99,7 @@ export default function CreateQuiz() {
                     <div className="py-4" key={q.id}>
                     <Card title="" content={
                         <div>
-                            <QuestionForm send={send} id={q.id} saveData={addQuestionData}></QuestionForm>
+                            <QuestionForm send={send} defaultValues={JSON.parse(q.data)} id={q.id} saveData={addQuestionData}></QuestionForm>
                         </div>
                     }/>
                     </div>

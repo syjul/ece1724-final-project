@@ -10,10 +10,11 @@ import QuestionType from "./questionType";
 interface QuestionFormProps {
     saveData: (id:number, fd: FormData) => void,
     id: number,
-    send: boolean
+    send: boolean,
+    defaultValues: {}
 }
 
-export default function QuestionForm({saveData, id, send}: QuestionFormProps) {
+export default function QuestionForm({saveData, id, send, defaultValues}: QuestionFormProps) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
@@ -27,6 +28,20 @@ export default function QuestionForm({saveData, id, send}: QuestionFormProps) {
             }
         }
     },[send])
+
+    useEffect(()=>{
+        const keys = Object.keys(defaultValues)
+        for(let i = 0; i < keys.length; i++ ) {
+            const key = keys[i]
+            const ele = document.getElementById(key)
+            if (ele) {
+                ele.value = defaultValues[key]
+                if (key == "questionTypeDropdown") {
+                    setQuestionType(parseInt(ele.value))
+                }
+            }
+        }
+    },[defaultValues])
 
     const typeChange = (e) => {
         setQuestionType(parseInt(e.target.value))
@@ -68,7 +83,7 @@ export default function QuestionForm({saveData, id, send}: QuestionFormProps) {
                 </div>
             </div>
             <hr></hr>
-            <QuestionType questionType={questionType}></QuestionType>
+            <QuestionType defaultValues={defaultValues} questionType={questionType}></QuestionType>
         </form>
         </div>
     </div>

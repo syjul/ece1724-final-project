@@ -18,7 +18,6 @@ export default function EditGroup() {
     useEffect(()=>{
         if(params.id){
             getGroup(parseInt(params.id)).then((g)=>{
-                console.log("GROUP: "+ g.users[0].id)
                 let ids = []
                 for(let i = 0; i < g.users.length; i++ ) {
                     ids.push(g.users[i].id)
@@ -63,6 +62,15 @@ export default function EditGroup() {
             setError("Error creating group")
         }})
     }
+    
+    const onUserChange = (event) => {
+        let options: HTMLOptionElement[] = Array.from(event.target.options);
+
+        let selected = options
+        .filter(o => o.selected)
+        .map(o => o.value);
+        setUserIDS(selected)
+    }
 
     return (
 <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -76,7 +84,7 @@ export default function EditGroup() {
                         Name
                     </label>
                     <div className="mt-2">
-                        <input value={group.name} id="name" name="name" type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></input>
+                        <input defaultValue={group.name} id="name" name="name" type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></input>
                     </div>
                 </div>
 
@@ -86,8 +94,7 @@ export default function EditGroup() {
                         Users
                         </label>
                     </div>
-                    <select value={userIDS} multiple name="users" id="users" className="border p-2 w-full" data-testid="author-dropdown">
-                    {/*<option value="US">United States</option>*/}
+                    <select value={userIDS} onChange={onUserChange} multiple name="users" id="users" className="border p-2 w-full" data-testid="author-dropdown">
                     {fetchUsers.length === 0 ? (<option disabled>No users available</option>) 
                     : (fetchUsers.map((a)=>{return <option key={a.id} value={a.id}>{a.name}</option>}))}
                     </select>

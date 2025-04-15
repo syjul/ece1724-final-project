@@ -1,13 +1,56 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 
 interface QuestionProps {
-    questionType: number
+    questionType: number,
+    defaultValues: {}
 }
 
 
-export default function QuestionType({questionType} : QuestionProps) {
+export default function QuestionType({questionType, defaultValues} : QuestionProps) {
     let [choices,setChoices] = useState<choice[]>([])
+
+    useEffect(()=>{
+        const keys = Object.keys(defaultValues)
+        for(let i = 0; i < keys.length; i++ ) {
+            const key = keys[i]
+            if (key.startsWith("choice",0)) {
+                let ch = key.split('-')
+                const id = parseInt(ch[ch.length-1])
+                if (!isNaN(id)) {
+                    let choice = {}//choices.find((c)=>{c.id == id})
+                    let found = false
+                    for (var k = 0; k < choices.length; k++) {
+                        if (choices[k].id == id) {
+                            choice = choices[k]
+                            found = true
+                            break
+                        }
+                    }
+                    if (!found) {
+                        choice = {
+                            id: id
+                        }
+                        choices.push(choice)
+                    }
+                    switch(ch[1]) {
+                        case "text": 
+                            choice.text = defaultValues[key]
+                            break
+                        case "correct":
+                            choice.isCorrect = true
+                            break
+                    }
+                }
+            }
+            /*
+            const ele = document.getElementById(key)
+            if (ele) {
+                ele.value = defaultValues[key]
+            }*/
+        }
+        setChoices(choices)
+    },[defaultValues])
 
     interface choice {
         id: number

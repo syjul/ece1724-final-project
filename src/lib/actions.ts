@@ -172,12 +172,80 @@ export const getQuizzes = async (manage: boolean) => {
   }
 }
 
+export const getQuiz = async (id: number) => {
+  return prisma.quiz.findFirst({
+    where: {
+      id: id
+    },
+    include: {
+      questions: true,
+      users: true,
+      groups: true
+    }
+  })
+}
+
 interface CreateQuizInput {
   id: number,
   data: {}
 }
 
-export const createQuizWithQuestions = async (name:string, quizObjects:CreateQuizInput[]) => {
+export const assignQuiz = async (id: number, groups: string[], users: string[]) => {
+  return prisma.quiz.update({
+    data: {
+      users: {
+        connect: users.map((id) => ({id: id}))
+      },
+      groups: {
+        connect: groups.map((id)=>({id: parseInt(id)}))
+      }
+    },
+    where: {
+      id: id
+    }
+  })
+}
+
+export const editQuizWithQuestions = async (id:number, name:string, time:string, quizObjects:CreateQuizInput[]) => {
+  await getSession(true)
+  try{
+    let questions = []
+    for (let i = 0; i < quizObjects.length; i++) {
+      const question = {
+        data: JSON.stringify(quizObjects[i].data),
+        type: parseInt(quizObjects[i].data["questionTypeDropdown"]),
+        id: quizObjects[i].id
+      }
+      questions.push(question)
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      await prisma.quiz.update({
+        where: {
+          id: id
+        },
+        data: {
+          name: name,
+          expiresAt: (time?new Date(time):null),
+          questions: {
+            upsert: {
+              create: questions[i],
+              update: questions[i],
+              where: {
+                id: questions[i].id
+              }
+            },
+          }
+        },
+      })
+    }
+  } catch (e) {
+    throw e
+  }
+}
+
+export const createQuizWithQuestions = async (name:string, time?:string, quizObjects:CreateQuizInput[]) => {
+  await getSession(true)
   try{
     let questions = []
     for (let i = 0; i < quizObjects.length; i++) {
@@ -191,6 +259,7 @@ export const createQuizWithQuestions = async (name:string, quizObjects:CreateQui
     await prisma.quiz.create({
       data: {
         name: name,
+        expiresAt: (time?new Date(time):null),
         questions: {
           create: questions
         }

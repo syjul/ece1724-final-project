@@ -41,7 +41,7 @@ export default function QuizList(props : QuizListProps ) {
                         props.quizzes.map((q)=>{return (
                             <tr key={q.id}>
                                 <td>{q.name}</td>
-                                {props.manage?<td><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/edit"}>Edit</Link><Button onClick={()=>{deleteQuizContext(q.id)}} className="text-red-800 bg-red-50">Delete</Button></td>:<></>}
+                                {props.manage?<td><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/assignments"}>Assign</Link><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/edit"}>Edit</Link><Button onClick={()=>{deleteQuizContext(q.id)}} className="text-red-800 bg-red-50">Delete</Button></td>:<></>}
                             </tr>)})
                     }
                 </tbody>
