@@ -90,7 +90,7 @@ model Quiz {
   questions Question[]
   groups    Group[]
   users     User[]
-  ownedBy   String
+  expiresAt DateTime?
 
   @@unique([name])
 }

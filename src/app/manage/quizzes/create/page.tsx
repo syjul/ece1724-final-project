@@ -1,12 +1,10 @@
 "use client"
 
 import { Suspense } from "react";
-import CreateQuiz from "@/components/createQuiz";
 import Navbar from "@/components/navbar";
+import CreateQuiz from "@/components/createQuiz";
 
-
-
-export default function User() {
+export default function Quiz() {
   return (
     <Suspense>
       <Navbar activeTab={3} />

@@ -4,11 +4,12 @@ import { Suspense, useEffect, useState } from "react";
 import QuizList from "@/components/quizList";
 import { getQuizzes } from "@/lib/actions"
 import Navbar from "@/components/navbar";
-import { authClient } from "@/lib/auth-client";
 import Card from "@/components/ui/card" 
+import Link from "next/link"
+import { buttonVariants } from "@/components/ui/button";
 
 
-export default function Dashboard() {
+export default function ManageQuizzes() {
   const [loading, setLoading] = useState(true)
   const [quizzes, setQuizzes] = useState([])
 
@@ -24,16 +25,21 @@ export default function Dashboard() {
   }
 
   useEffect(()=> {
-    getQuizContext(false)
+    getQuizContext(true)
   },[])
 
   return (
     <div>
       {
-      loading? <p>Loading dashboard...</p>:
+      loading? <p>Loading quizzes...</p>:
         <div>
-          <Navbar activeTab={0}/>
-          <Card title="Available Quizzes" content={<QuizList manage={false} quizzes={quizzes}/>} />
+          <Navbar activeTab={3}/>
+          <Card title="Quizzes" content={
+            <div>
+                <Link className={buttonVariants({variant:"outline"})} href="/manage/quizzes/create">New Quiz</Link>
+                <QuizList manage={true} quizzes={quizzes}/>
+            </div>
+            } />
         </div>
       }
     </div>

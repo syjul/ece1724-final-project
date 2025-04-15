@@ -158,9 +158,6 @@ export const getQuizzes = async (manage: boolean) => {
 
   if (manage) {
     return prisma.quiz.findMany({
-      where: {
-        ownedBy: session.user.id
-      }
     })
   } else {
     return prisma.quiz.findMany({
@@ -173,4 +170,47 @@ export const getQuizzes = async (manage: boolean) => {
       }
     })
   }
+}
+
+interface CreateQuizInput {
+  id: number,
+  data: {}
+}
+
+export const createQuizWithQuestions = async (name:string, quizObjects:CreateQuizInput[]) => {
+  try{
+    let questions = []
+    for (let i = 0; i < quizObjects.length; i++) {
+      const question = {
+        data: JSON.stringify(quizObjects[i].data),
+        type: parseInt(quizObjects[i].data["questionTypeDropdown"])
+      }
+      questions.push(question)
+    }
+
+    await prisma.quiz.create({
+      data: {
+        name: name,
+        questions: {
+          create: questions
+        }
+      }
+    })
+  } catch (e) {
+    throw e
+  }
+}
+
+export const addQuestionsToQuiz = async (quiz) => {
+  
+}
+
+export const deleteQuiz = async (id: number) => {
+  await getSession(true)
+
+  return prisma.quiz.delete({
+    where: {
+      id: id
+    }
+  })
 }
