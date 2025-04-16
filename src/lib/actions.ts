@@ -270,16 +270,26 @@ export const createQuizWithQuestions = async (name:string, time?:string, quizObj
   }
 }
 
-export const addQuestionsToQuiz = async (quiz) => {
-  
-}
-
 export const deleteQuiz = async (id: number) => {
   await getSession(true)
 
   return prisma.quiz.delete({
     where: {
       id: id
+    }
+  })
+}
+
+export const addResponse = async (userID: string, questionID: number, response: string) => {
+  return prisma.answer.create({
+    data: {
+      user: {
+        connect: {id: userID}
+      },
+      question: {
+        connect: {id: questionID}
+      },
+      response: response
     }
   })
 }

@@ -32,7 +32,8 @@ export default function QuizList(props : QuizListProps ) {
                 <thead className="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                     <tr>
                     <th>Name</th>
-                    {props.manage?<th></th>:<></>}
+                    {props.manage?<th></th>:<th></th>}
+                    <th>Due by</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,7 +42,9 @@ export default function QuizList(props : QuizListProps ) {
                         props.quizzes.map((q)=>{return (
                             <tr key={q.id}>
                                 <td>{q.name}</td>
-                                {props.manage?<td><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/assignments"}>Assign</Link><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/edit"}>Edit</Link><Button onClick={()=>{deleteQuizContext(q.id)}} className="text-red-800 bg-red-50">Delete</Button></td>:<></>}
+                                {props.manage?<td><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/assignments"}>Assign</Link><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/edit"}>Edit</Link><Button onClick={()=>{deleteQuizContext(q.id)}} className="text-red-800 bg-red-50">Delete</Button></td>
+                                :<td><Link className={buttonVariants({variant:"outline"})} href={"/quizzes/"+q.id+"/take"}>Take Quiz</Link></td>}
+                                <td>{q.expiresAt?q.expiresAt.toLocaleString():"No expiration"}</td>
                             </tr>)})
                     }
                 </tbody>

@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 import { useParams } from "next/navigation"
 import { getQuiz } from "@/lib/actions"
 
-export default function EditQuiz() {
+export default function AssignQuizComponent() {
 const [quiz, setQuiz] = useState<Prisma.Quiz>()
 const params = useParams<{id: string}>()
 
