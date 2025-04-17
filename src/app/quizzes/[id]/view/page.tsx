@@ -8,6 +8,16 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+
 import Navbar from "@/components/navbar"
 import { getQuizResponses, getQuiz } from "@/lib/actions"
 import { useEffect, useState } from "react"
@@ -50,45 +60,45 @@ export default function ViewQuizAnalysis() {
             q.id = question.id
             q.type = question.type
             const data = JSON.parse(question.data)
-            if (question.type === 1) {
-                const keys = Object.keys(data)
-                const choices = []
-                for(let i = 0; i < keys.length; i++ ) {
-                    const key = keys[i]
-                    if (key === "questionText") {
-                        q.text = data[key];
-                    } else if (key.startsWith("choice",0)) {
-                        let ch = key.split('-')
-                        const id = parseInt(ch[ch.length-1])
-                        if (!isNaN(id)) {
-                            let choice = {}//choices.find((c)=>{c.id == id})
-                            let found = false
-                            for (var k = 0; k < choices.length; k++) {
-                                if (choices[k].id == id) {
-                                    choice = choices[k]
-                                    choice.key = key
-                                    found = true
-                                    break
-                                }
+            const keys = Object.keys(data)
+            const choices = []
+            for(let i = 0; i < keys.length; i++ ) {
+                const key = keys[i]
+                if (key === "questionText") {
+                    q.text = data[key];
+                } else if (key.startsWith("choice",0)) {
+                    let ch = key.split('-')
+                    const id = parseInt(ch[ch.length-1])
+                    if (!isNaN(id)) {
+                        let choice = {}//choices.find((c)=>{c.id == id})
+                        let found = false
+                        for (var k = 0; k < choices.length; k++) {
+                            if (choices[k].id == id) {
+                                choice = choices[k]
+                                choice.key = key
+                                found = true
+                                break
                             }
-                            if (!found) {
-                                choice = {
-                                    id: id,
-                                    key: key
-                                }
-                                choices.push(choice)
+                        }
+                        if (!found) {
+                            choice = {
+                                id: id,
+                                key: key
                             }
-                            switch(ch[1]) {
-                                case "text": 
-                                    choice.text = data[key]
-                                    break
-                                case "correct":
-                                    choice.isCorrect = true
-                                    break
-                            }
+                            choices.push(choice)
+                        }
+                        switch(ch[1]) {
+                            case "text": 
+                                choice.text = data[key]
+                                break
+                            case "correct":
+                                choice.isCorrect = true
+                                break
                         }
                     }
                 }
+            }
+            if (question.type === 1) {
                 let resData = {}
                 q.choices = choices
                 let config = {}
@@ -121,9 +131,20 @@ export default function ViewQuizAnalysis() {
                     pieChartData.push(qrd)
                 }
                 q.pieChartData = pieChartData
-                console.log(q)
-                console.log()
+            } else if (question.type === 0) {
+                let responses = {}
+                for (let i = 0; i < responseData.length; i++) {
+                    const res = JSON.parse(responseData[i].response)
+                    const rd = Object.keys(res)[0].split("-")
+                    const qid = rd[rd.length-1]
+                    if (parseInt(qid) === q.id) {
+                        const uid = responseData[i].user.name
+                        responses[uid] = Object.values(res)[0]
+                    }
+                }
+                q.responses = Object.entries(responses)
             }
+                
             questionData.push(q)
         }
         setQuestionData(questionData)
@@ -163,10 +184,28 @@ export default function ViewQuizAnalysis() {
                         return (
                             <div key={q.id}>
                                 {q.type === 1? (<PieChart name={q.text} config={q.config} data={q.pieChartData}></PieChart>):
-                                (<div>{q.type === 0?(<p></p>): (<p>Not Implemented</p>)}</div>)}
-                            </div>
+                                (<div>
+                                    {q.type === 0?(<Table>
+                                    <TableCaption>{q.text}</TableCaption>
+                                    <TableHeader>
+                                        <TableRow>
+                                        <TableHead>User</TableHead>
+                                        <TableHead className="text-right">Response</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {q.responses.map((r)=>{return (
+                                            <TableRow>
+                                            <TableCell>{r[0]}</TableCell>
+                                            <TableCell className="text-right">{r[1]}</TableCell>
+                                            </TableRow>)})}
+                                    </TableBody>
+                                    </Table>)
+                                : (<p>Not Implemented</p>)}</div>)}
+                                </div>)
+                            }
                         )
-                    })}
+                    }
                 </div>
             </div>)}
         </div>

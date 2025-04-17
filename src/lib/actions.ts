@@ -305,6 +305,9 @@ export const getQuizResponses = async (quizID: number) => {
           in: responses.questions.map((q)=>{return q.id})
         }
       }
+    },
+    include: {
+      user: true
     }
   })
 }
