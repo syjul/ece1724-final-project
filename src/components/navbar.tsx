@@ -1,8 +1,9 @@
+"use client"
+
 import { authClient } from "@/lib/auth-client"
-import Link from "next/link"
 import { Button } from "./ui/button"
 import { Prisma } from "@prisma/client";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface NavbarProps {
     activeTab: number

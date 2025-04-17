@@ -22,8 +22,6 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
     useEffect(()=>{
         if (quiz) {
             setLoading(false)
-            console.log("Questions: ")
-            console.log(quiz?.questions)
         }
     },[quiz])
 
@@ -49,7 +47,9 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                                 
                             }
                         }*/
-                       await addResponse(sess.data?.user.id, qID, pair[1])
+                        let response = {}
+                        response[pair[0]] = pair[1]
+                       await addResponse(sess.data?.user.id, qID, JSON.stringify(response))
                     }
                 }
             } 

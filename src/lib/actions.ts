@@ -293,3 +293,17 @@ export const addResponse = async (userID: string, questionID: number, response: 
     }
   })
 }
+
+export const getQuizResponses = async (quizID: number) => {
+  const responses = await getQuiz(quizID)
+
+  return prisma.answer.findMany({
+    where: {
+      question: {
+        id: {
+          in: responses.questions.map((q)=>{return q.id})
+        }
+      }
+    }
+  })
+}
