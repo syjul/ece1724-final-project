@@ -60,7 +60,7 @@ export default function QuestionForm({saveData, id, send, defaultValues}: Questi
                 <Dropdown id="questionTypeDropdown" title="Question Type" onChange={typeChange}
                     options={[{
                         value: "0",
-                        text: "True/False"
+                        text: "Short Response"
                     },
                     {
                         value: "1",
@@ -69,10 +69,6 @@ export default function QuestionForm({saveData, id, send, defaultValues}: Questi
                     {
                         value: "2",
                         text: "Select All"
-                    },
-                    {
-                        value: "3",
-                        text: "Short Response"
                     }]}></Dropdown>
             <div>
                 <label htmlFor="questionText" className="block text-sm/6 font-medium text-gray-900">

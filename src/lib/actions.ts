@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client"
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers"
 import {v4 as uuidv4 } from "uuid";
+import AWS from 'aws-sdk'
 
 const getSession = async (checkManager: boolean) => {
   const headerList = await headers()
@@ -307,3 +308,37 @@ export const getQuizResponses = async (quizID: number) => {
     }
   })
 }
+
+const uploadFile = async (name: string, data: BinaryData) => {
+  const S3_BUCKET = process.env.AWS_BUCKET_NAME;
+  const REGION = process.env.AWS_REGION;
+
+  AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_ACCESS_KEY,
+  });
+  const s3 = new AWS.S3({
+    params: { Bucket: S3_BUCKET },
+    region: REGION,
+  });
+
+  const params = {
+    Bucket: S3_BUCKET,
+    Key: name,
+    Body: data,
+  };
+
+  var upload = s3
+    .putObject(params)
+    .on("httpUploadProgress", (evt) => {
+      /*console.log(
+        "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
+      );*/
+    })
+    .promise();
+
+  await upload.then((err, data) => {
+    console.log(err);
+    alert("File uploaded successfully.");
+  });
+};

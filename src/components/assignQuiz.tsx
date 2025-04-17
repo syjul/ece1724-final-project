@@ -56,6 +56,9 @@ export default function AssignQuiz({quiz}:AssignQuizProps) {
                 }
     
                 let userList = users.split(",")
+                if (users === "") {
+                    userList = []
+                }
 
                 const groupsFD = fd.get("groups")
                 let groups = ""
@@ -64,6 +67,9 @@ export default function AssignQuiz({quiz}:AssignQuizProps) {
                 }
     
                 let groupList = groups.split(",")
+                if (groups === "") {
+                    groupList = []
+                }
     
                 const result = await assignQuiz(parseInt(params.id), groupList, userList)
                 setMessage("Quiz assigned succesfully")
@@ -102,7 +108,7 @@ export default function AssignQuiz({quiz}:AssignQuizProps) {
                     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Assignments to {quiz.name}</h2>
+        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Assignments to "{quiz.name}"</h2>
     </div>
             <form className="space-y-6" action={handleSaveAssignments}>
                 <div>

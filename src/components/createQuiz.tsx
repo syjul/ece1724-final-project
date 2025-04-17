@@ -1,6 +1,6 @@
 "use client"
 
-import Card from "@/components/ui/card" 
+import Card from "@/components/ui/card_old" 
 import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import QuestionForm from "./questionForm";
@@ -99,7 +99,7 @@ export default function CreateQuiz({quiz}:CreateQuizProps) {
                     <div className="py-4" key={q.id}>
                     <Card title="" content={
                         <div>
-                            <QuestionForm send={send} defaultValues={JSON.parse(q.data)} id={q.id} saveData={addQuestionData}></QuestionForm>
+                            <QuestionForm send={send} defaultValues={q.data?JSON.parse(q.data):{}} id={q.id} saveData={addQuestionData}></QuestionForm>
                         </div>
                     }/>
                     </div>

@@ -36,22 +36,20 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                 setMessage("")
     
                 for (var pair of fd.entries()) {
-                    console.log(pair[0]+ ', ' + pair[1]); 
                     let k = pair[0].split("-")
-                    if (k.length > 3) {
-                        const qID = parseInt(k[k.length-1])
-                        /*const quest = quiz.questions.find((q)=>{return (q.id === qID)})
-                        if (quest) {
-                            if (quest.type == 1) {
-                                //const cID = k[k.length-2]
-                                
-                            }
-                        }*/
-                        let response = {}
-                        response[pair[0]] = pair[1]
-                       await addResponse(sess.data?.user.id, qID, JSON.stringify(response))
-                    }
+                    const qID = parseInt(k[k.length-1])
+                    /*const quest = quiz.questions.find((q)=>{return (q.id === qID)})
+                    if (quest) {
+                        if (quest.type == 1) {
+                            //const cID = k[k.length-2]
+                            
+                        }
+                    }*/
+                    let response = {}
+                    response[pair[0]] = pair[1]
+                    await addResponse(sess.data?.user.id, qID, JSON.stringify(response))
                 }
+                window.location.href = "/dashboard"
             } 
             catch (e) {
                 console.log("Error: " + e)
@@ -71,7 +69,9 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                     </div>
                     <form className="space-y-6" action={handleSaveQuiz}>
                         {quiz?.questions.map((question)=>{return (
-                            <TakeQuestion question={question}></TakeQuestion>
+                            <div key={question.id}>
+                                <TakeQuestion question={question}></TakeQuestion>
+                            </div>
                         )})}
 
                         {error ? <p className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">{error}</p>:<></>}

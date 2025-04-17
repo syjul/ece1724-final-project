@@ -86,16 +86,16 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
     return (
         <div>
         {
-            questionType === 0? // True/False - allow correctness?
+            questionType === 0? // Short answer
             (
                 <div>
                     <div className="flex items-center justify-between">
                         <label htmlFor={"choice-correct"} className="block text-sm/6 font-medium text-gray-900">
-                            Correct
+                            Correct Text 
                         </label>
                     </div>
                     <div className="mt-2">
-                        <input id={"choice-correct"} name={"choice-correct"} type="checkbox" className="" ></input>
+                        <input placeholder="Leave empty for none" id={"choice-correct"} name={"choice-correct"} type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" ></input>
                     </div>
                 </div>
             )

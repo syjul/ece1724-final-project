@@ -29,7 +29,8 @@ export default function ViewQuizAnalysis() {
             getQuiz(id).then((q)=>{
                 setResponses(r)
                 setQuiz(q)
-                unravelQuestionData(q)
+                console.log(r)
+                unravelQuestionData(q, r)
                 setIsLoading(false)
             })
         })
@@ -41,11 +42,12 @@ export default function ViewQuizAnalysis() {
         getResponses(id)
     },[])
 
-    const unravelQuestionData = (quiz: Prisma.Quiz) => {
+    const unravelQuestionData = (quiz: Prisma.Quiz, responseData) => {
         let questionData = []
         for(let i = 0; i < quiz.questions.length; i++) {
             let q = {}
             const question = quiz.questions[i]
+            q.id = question.id
             q.type = question.type
             const data = JSON.parse(question.data)
             if (question.type === 1) {
@@ -61,17 +63,18 @@ export default function ViewQuizAnalysis() {
                         if (!isNaN(id)) {
                             let choice = {}//choices.find((c)=>{c.id == id})
                             let found = false
-                            choice.key = key
                             for (var k = 0; k < choices.length; k++) {
                                 if (choices[k].id == id) {
                                     choice = choices[k]
+                                    choice.key = key
                                     found = true
                                     break
                                 }
                             }
                             if (!found) {
                                 choice = {
-                                    id: id
+                                    id: id,
+                                    key: key
                                 }
                                 choices.push(choice)
                             }
@@ -86,19 +89,54 @@ export default function ViewQuizAnalysis() {
                         }
                     }
                 }
+                let resData = {}
                 q.choices = choices
                 let config = {}
                 for (let k = 0; k < choices.length; k++) {
-                    config[choices[k].key] = {
-                        "label":choices[k].text
+                    resData[choices[k].id.toString()] = 0
+                    config[choices[k].id.toString()] = {
+                        "label":choices[k].text,
+                        "color":colors[k%6]
                     }
                 }
                 q.config = config
+
+                for (let i = 0; i < responseData.length; i++) {
+                    const res = JSON.parse(responseData[i].response)
+                    const rd = Object.keys(res)[0].split("-")
+                    const qid = rd[rd.length-1]
+                    if (parseInt(qid) === q.id) {
+                        const cid = rd[rd.length-2]
+                        resData[cid] = resData[cid] + 1
+                    }
+                }
+                
+                var pieChartData = []
+                const entries = Object.entries(resData)
+                for (let i = 0; i < entries.length; i++) {
+                    var qrd = {}
+                    qrd["key"] = entries[i][0].toString()
+                    qrd["value"] = entries[i][1]
+                    qrd["fill"] = colors[i%6]
+                    pieChartData.push(qrd)
+                }
+                q.pieChartData = pieChartData
+                console.log(q)
+                console.log()
             }
             questionData.push(q)
         }
         setQuestionData(questionData)
     }
+
+    const colors = [
+        "#FF0000",
+        "#00FF00",
+        "#0000FF",
+        "#FFFF00",
+        "#00FFFF",
+        "#C0C0C0",
+    ]
 
     return(
         <div>
@@ -124,7 +162,8 @@ export default function ViewQuizAnalysis() {
                     {questionData.map((q) => {
                         return (
                             <div key={q.id}>
-                                {q.type === 1? (<PieChart name={q.text} config={q.config} data={[{"key":"choice-text-0","value":1}]}></PieChart>):(<p>Not Implemented</p>)}
+                                {q.type === 1? (<PieChart name={q.text} config={q.config} data={q.pieChartData}></PieChart>):
+                                (<div>{q.type === 0?(<p></p>): (<p>Not Implemented</p>)}</div>)}
                             </div>
                         )
                     })}
