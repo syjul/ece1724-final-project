@@ -50,7 +50,7 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                     }*/
                     let response = {}
                     response[pair[0]] = pair[1]
-                    responses.push(pair)
+                    responses.push([...pair,qID])
                     await addResponse(sessID, sess.data?.user.id, qID, JSON.stringify(response))
                 }
                 createXAPI(sessID,responses)
@@ -69,12 +69,47 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                 const sess = await authClient.getSession()
                 let statements = []
                 for (let i = 0; i < responses.length; i++) {
+                    console.log(responses)
+                    const qID = responses[i][2]
+                    const question = quiz.questions.find((q)=>{return q.id === qID})
+                    if (!question) {
+                        console.log(qID)
+                        console.log(quiz)
+                        break
+                    }
+                    const qdata = JSON.parse(question.data)
+                    let choiceText = {}
+                    for (const [key, value] of Object.entries(qdata)) {
+                        const ks = key.split("-")
+                        if (ks[1]==="text") {
+                            choiceText[ks[ks.length-1].toString()] = value
+                        }
+                    }
+                    if (!question.correctResponsePattern) {
+                        for (const [key, value] of Object.entries(qdata)) {
+                            const ks = key.split("-")
+                            if (ks[1]=="correct") {
+                                if (question.type == 0) {
+                                    question["correctResponsePattern"] = [
+                                        value
+                                    ]
+                                } else {
+                                    console.log(question["correctResopnsePattern"])
+                                    question["correctResopnsePattern"] = question["correctResopnsePattern"]?
+                                        question["correctResopnsePattern"].push(choiceText[ks[ks.length-1]]):[choiceText[ks[ks.length-1]]]
+                                }
+                            }
+                        }
+                    }
                     let statement = {
                         "actor": {
                             "account": {
                                 "homePage":"/", 
                                 "name": sess.data?.user.username
                             }
+                        },
+                        "context": {
+                            "registration": sessID
                         },
                         "verb": {
                             "id": "http://adlnet.gov/expapi/verbs/answered",
@@ -86,16 +121,33 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                             "id":responses[i][0],
                             "definition": {
                                 "name": { "en-US": responses[i][0] }
-                            }
+                            },
+                            "correctResponsePattern":question["correctResopnsePattern"]
                         },
-                        "result": {
+                    }
+                    if (question.type === 0) {
+                        statement["result"] = {
                             "response": responses[i][1]
-                        },
-                        "context": {
-                            "registration": sessID
+                        }
+                        statements.push(statement)
+                    } else if (question.type === 1) {
+                        const smt = statements.find((s)=>{
+                            return s["object"]["id"].split("-")[3] === question.id
+                        })
+                        const cid = responses[i][0].split("-")[2]
+                        console.log("CID: " + cid)
+                        console.log(choiceText)
+                        if (smt) {
+                            let res = smt["result"]["response"]
+                            res = res.slice(0,res.length-2)+","+choiceText[cid]+"]"
+                            smt["result"]["response"] = res
+                        } else {
+                            statement["result"] = {
+                                "response": "["+choiceText[cid]+"]"//responses[i][1]
+                            }
+                            statements.push(statement)
                         }
                     }
-                    statements.push(statement)
                 }
                 const statementStr = JSON.stringify(statements)
                 uploadFile(sessID, statementStr)

@@ -308,7 +308,8 @@ export const getQuizResponses = async (quizID: number) => {
       }
     },
     include: {
-      user: true
+      user: true,
+      question: true
     }
   })
 }
