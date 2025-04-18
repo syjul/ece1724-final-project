@@ -1,7 +1,9 @@
 # Final Project Report:
 ## Team Information
 Name: Stephen Lucas
+
 Email Address: stephen.lucas@mail.utoronto.ca
+
 Student Number: 1011819089
 
 ## Motivation
