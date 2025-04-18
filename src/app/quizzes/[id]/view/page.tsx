@@ -19,16 +19,20 @@ import {
   } from "@/components/ui/table"
 
 import Navbar from "@/components/navbar"
-import { getQuizResponses, getQuiz } from "@/lib/actions"
+import { getQuizResponses, getQuiz, getFile } from "@/lib/actions"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Prisma } from "@prisma/client"
 import PieChart from "@/components/ui/pieChart"
+import { GetObjectOutput } from "aws-sdk/clients/s3"
+import { AWSError } from "aws-sdk"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function ViewQuizAnalysis() {
     const [quizID, setQuizID] = useState(0)
     const [responses,setResponses] = useState<Prisma.Response>([])
-    const [responseData, setResponseData] = useState()
+    const [sessionIDs, setSessionIDs] = useState([])
     const [questionData, setQuestionData] = useState([])
     const [quiz, setQuiz] = useState<Prisma.Quiz>()
     const [isLoading, setIsLoading] = useState(true)
@@ -42,7 +46,26 @@ export default function ViewQuizAnalysis() {
                 console.log(r)
                 unravelQuestionData(q, r)
                 setIsLoading(false)
+
+                let sessIDS = []
+                for (let i = 0; i < r.length; i++) {
+                    const idx = sessIDS.find((s)=>{return s[1]===r[i].sessionID})
+                    if (!idx) {
+                        sessIDS.push([r[i].user.name,r[i].sessionID])
+                    }
+                }
+                setSessionIDs(sessIDS)
             })
+        })
+    }
+
+    const downloadFile = (sessID:string) => {
+        getFile(sessID).then((d)=>{
+            var link = document.createElement('a')  // once we have the file buffer BLOB from the post request we simply need to send a GET request to retrieve the file data
+            link.href = window.URL.createObjectURL(new Blob([d]))
+            link.download = sessID
+            link.click()
+            link.remove();  //afterwards we remove the element  
         })
     }
 
@@ -170,7 +193,7 @@ export default function ViewQuizAnalysis() {
                         <CardHeader className="relative">
                         <CardDescription>Total Responses</CardDescription>
                         <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                            {responses.length}
+                            {sessionIDs.length}
                         </CardTitle>
                         <div className="absolute right-4 top-4">
                         </div>
@@ -180,6 +203,24 @@ export default function ViewQuizAnalysis() {
                             </div>
                         </CardFooter>
                     </Card>
+
+                    <Table>
+                    <TableCaption>Sessions</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead className="text-right">Session</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {sessionIDs.map((s)=>{return (
+                            <TableRow>
+                            <TableCell>{s[0]}</TableCell>
+                            <TableCell className="text-right"><Button onClick={()=>{downloadFile(s[1])}}>{s[1]}</Button></TableCell>
+                            </TableRow>)})}
+                    </TableBody>
+                    </Table>
+
                     {questionData.map((q) => {
                         return (
                             <div key={q.id}>

@@ -281,7 +281,7 @@ export const deleteQuiz = async (id: number) => {
   })
 }
 
-export const addResponse = async (userID: string, questionID: number, response: string) => {
+export const addResponse = async (sessID: string, userID: string, questionID: number, response: string) => {
   return prisma.answer.create({
     data: {
       user: {
@@ -290,7 +290,8 @@ export const addResponse = async (userID: string, questionID: number, response: 
       question: {
         connect: {id: questionID}
       },
-      response: response
+      response: response,
+      sessionID: sessID
     }
   })
 }
@@ -312,7 +313,7 @@ export const getQuizResponses = async (quizID: number) => {
   })
 }
 
-const uploadFile = async (name: string, data: BinaryData) => {
+export const uploadFile = async (name: string, data: string) => {
   const S3_BUCKET = process.env.AWS_BUCKET_NAME;
   const REGION = process.env.AWS_REGION;
 
@@ -342,6 +343,34 @@ const uploadFile = async (name: string, data: BinaryData) => {
 
   await upload.then((err, data) => {
     console.log(err);
-    alert("File uploaded successfully.");
+    //alert("File uploaded successfully.");
   });
+};
+
+export const getFile = async (name: string) => {
+  const S3_BUCKET = process.env.AWS_BUCKET_NAME;
+  const REGION = process.env.AWS_REGION;
+
+  AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_ACCESS_KEY,
+  });
+  const s3 = new AWS.S3({
+    params: { Bucket: S3_BUCKET },
+    region: REGION,
+  });
+
+  const params = {
+    Bucket: S3_BUCKET,
+    Key: name,
+  };
+
+  var get = s3
+    .getObject(params)
+    .promise();
+
+  let g = await get
+  const body = g.Body
+  
+  return body
 };

@@ -110,5 +110,6 @@ model Answer {
   question   Question @relation(fields: [questionId], references: [id])
   response   String
   userId     String
+  sessionID  String   @default(uuid())
   questionId Int
 }

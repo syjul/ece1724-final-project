@@ -1,7 +1,7 @@
 "use client"
 
  import { useEffect, useState, startTransition} from "react";
-import { getUsers, getGroups, addResponse } from "@/lib/actions"
+import { getUsers, getGroups, addResponse, uploadFile } from "@/lib/actions"
 import { Prisma } from "@prisma/client";
 import { assignQuiz } from "@/lib/actions"
 import { buttonVariants, Button } from "./ui/button";
@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation'
 import Link from "next/link"
 import TakeQuestion from "./takeQuestion";
 import { authClient } from "@/lib/auth-client";
+import {v4 as uuidv4 } from "uuid";
 
 interface TakeQuizProps {
     quiz: Prisma.Quiz,
@@ -26,6 +27,8 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
     },[quiz])
 
     const handleSaveQuiz = (fd: FormData) => {
+        const sessID = uuidv4()
+        let responses = []
         startTransition(async () => {
             try {
                 const sess = await authClient.getSession()
@@ -47,13 +50,60 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                     }*/
                     let response = {}
                     response[pair[0]] = pair[1]
-                    await addResponse(sess.data?.user.id, qID, JSON.stringify(response))
+                    responses.push(pair)
+                    await addResponse(sessID, sess.data?.user.id, qID, JSON.stringify(response))
                 }
-                window.location.href = "/dashboard"
+                createXAPI(sessID,responses)
+                //window.location.href = "/dashboard"
             } 
             catch (e) {
                 console.log("Error: " + e)
                 setError("Error assigning to quiz")
+            }
+        })
+    }
+
+    const createXAPI = (sessID: string, responses: []) => {
+        startTransition(async () => {
+            try {
+                const sess = await authClient.getSession()
+                let statements = []
+                for (let i = 0; i < responses.length; i++) {
+                    let statement = {
+                        "actor": {
+                            "account": {
+                                "homePage":"/", 
+                                "name": sess.data?.user.username
+                            }
+                        },
+                        "verb": {
+                            "id": "http://adlnet.gov/expapi/verbs/answered",
+                            "display": {
+                                "en-us" : "answered"
+                            }
+                        },
+                        "object": {
+                            "id":responses[i][0],
+                            "definition": {
+                                "name": { "en-US": responses[i][0] }
+                            }
+                        },
+                        "result": {
+                            "response": responses[i][1]
+                        },
+                        "context": {
+                            "registration": sessID
+                        }
+                    }
+                    statements.push(statement)
+                }
+                const statementStr = JSON.stringify(statements)
+                uploadFile(sessID, statementStr)
+                //window.location.href = "/dashboard"
+            }
+            catch (e) {
+                console.log("Error file: " + e)
+                setError("Error saving to file")
             }
         })
     }
