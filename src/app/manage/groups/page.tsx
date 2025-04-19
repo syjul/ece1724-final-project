@@ -6,7 +6,7 @@ import Navbar from "@/components/navbar";
 import Card from "@/components/ui/card" 
 import  Link  from "next/link"
 import { buttonVariants } from "@/components/ui/button";
-import GroupList from "@/components/groupList";
+import GroupList from "@/components/group/groupList";
 
 
 export default function Groups() {

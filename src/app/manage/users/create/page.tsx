@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense } from "react";
-import CreateUser from "@/components/createUser";
+import CreateUser from "@/components/user/createUser";
 import Navbar from "@/components/navbar";
 
 export default function User() {

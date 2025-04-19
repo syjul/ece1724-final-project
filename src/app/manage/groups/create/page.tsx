@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense } from "react";
-import CreateQuiz from "@/components/createQuiz";
+import CreateQuiz from "@/components/quiz/createQuiz";
 import Navbar from "@/components/navbar";
 
 

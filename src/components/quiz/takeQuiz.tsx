@@ -4,10 +4,10 @@
 import { getUsers, getGroups, addResponse, uploadFile } from "@/lib/actions"
 import { Prisma } from "@prisma/client";
 import { assignQuiz } from "@/lib/actions"
-import { buttonVariants, Button } from "./ui/button";
+import { buttonVariants, Button } from "../ui/button";
 import { useParams } from 'next/navigation'
 import Link from "next/link"
-import TakeQuestion from "./takeQuestion";
+import TakeQuestion from "../takeQuestion";
 import { authClient } from "@/lib/auth-client";
 import {v4 as uuidv4 } from "uuid";
 

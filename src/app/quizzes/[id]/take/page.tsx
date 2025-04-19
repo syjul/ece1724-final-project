@@ -2,11 +2,11 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
-import AssignQuiz from "@/components/assignQuiz";
+import AssignQuiz from "@/components/quiz/assignQuiz";
 import { Prisma } from "@prisma/client";
 import { useParams } from "next/navigation"
 import { getQuiz } from "@/lib/actions"
-import TakeQuiz from "@/components/takeQuiz" 
+import TakeQuiz from "@/components/quiz/takeQuiz" 
 
 export default function TakeQuizMain() {
     const [quiz, setQuiz] = useState<Prisma.Quiz>()

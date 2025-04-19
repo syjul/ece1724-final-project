@@ -3,7 +3,7 @@
 import Card from "@/components/ui/card_old" 
 import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import QuestionForm from "./questionForm";
+import QuestionForm from "../question/questionForm";
 import { createQuizWithQuestions, editQuizWithQuestions } from "@/lib/actions"
 import { Prisma } from "@prisma/client";
 

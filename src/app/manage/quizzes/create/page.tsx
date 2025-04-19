@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import Navbar from "@/components/navbar";
-import CreateQuiz from "@/components/createQuiz";
+import CreateQuiz from "@/components/quiz/createQuiz";
 
 export default function Quiz() {
   return (

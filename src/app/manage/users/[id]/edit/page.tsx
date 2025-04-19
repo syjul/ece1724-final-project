@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense } from "react";
-import EditUser from "@/components/editUser";
+import EditUser from "@/components/user/editUser";
 import Navbar from "@/components/navbar";
 
 export default function User() {

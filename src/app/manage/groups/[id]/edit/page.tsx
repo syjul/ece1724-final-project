@@ -1,12 +1,12 @@
 "use client"
 
 import { Suspense } from "react";
-import EditGroup from "@/components/editGroup";
+import EditGroup from "@/components/group/editGroup";
 import Navbar from "@/components/navbar";
 
 
 
-export default function User() {
+export default function GroupEdit() {
   return (
     <Suspense>
       <Navbar activeTab={2} />

@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useEffect, useState } from "react";
-import QuizList from "@/components/quizList";
+import QuizList from "@/components/quiz/quizList";
 import { getQuizzes } from "@/lib/actions"
 import Navbar from "@/components/navbar";
 import Card from "@/components/ui/card_old" 

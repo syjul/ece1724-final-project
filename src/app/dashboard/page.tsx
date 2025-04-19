@@ -1,19 +1,18 @@
 "use client"
 
 import { Suspense, useEffect, useState } from "react";
-import QuizList from "@/components/quizList";
+import QuizList from "@/components/quiz/quizList";
 import { getQuizzes } from "@/lib/actions"
 import Navbar from "@/components/navbar";
 import { authClient } from "@/lib/auth-client";
 import Card from "@/components/ui/card_old"
-import { Prisma } from "@prisma/client"; 
 
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [quizzes, setQuizzes] = useState([])
   const [manageQuizzes, setManageQuizzes] = useState([])
-  const [user, setUser] = useState<Prisma.User>({})
+  const [user, setUser] = useState({})
 
 
   const getQuizContext = async (manage: boolean) => {

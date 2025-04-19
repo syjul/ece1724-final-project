@@ -1,12 +1,11 @@
 "use client"
 
 import { Suspense, useEffect, useState } from "react";
-import UserList from "@/components/userList";
+import UserList from "@/components/user/userList";
 import { getUsers } from "@/lib/actions"
 import Navbar from "@/components/navbar";
-import Card from "@/components/ui/card" 
+import Card from "@/components/ui/card_old" 
 import  Link  from "next/link"
-import { Prisma } from "@prisma/client";
 import { buttonVariants } from "@/components/ui/button";
 
 

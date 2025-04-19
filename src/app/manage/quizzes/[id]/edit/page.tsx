@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
-import CreateQuiz from "@/components/createQuiz";
+import CreateQuiz from "@/components/quiz/createQuiz";
 import { Prisma } from "@prisma/client";
 import { useParams } from "next/navigation"
 import { getQuiz } from "@/lib/actions"
