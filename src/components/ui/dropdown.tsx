@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface DropdownProps {
     title: string,
     options: Option[],
     onChange: (e)=>void,
-    id: string
+    id: string,
+    defaultValue: string
 }
 
 interface Option {
@@ -13,13 +14,17 @@ interface Option {
 }
 
 
-export default function Dropdown({title, options, onChange, id} : DropdownProps) {
+export default function Dropdown({defaultValue, title, options, onChange, id} : DropdownProps) {
     let [value,setValue] = useState("")
     
     const typeChange = (e) => {
         onChange(e)
         setValue(e.target.value)
     }
+
+    useEffect(()=>{
+        setValue(defaultValue)
+    },[defaultValue])
     
     return (
         <div>

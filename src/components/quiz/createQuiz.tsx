@@ -68,7 +68,7 @@ export default function CreateQuiz({quiz}:CreateQuizProps) {
 
     return(
         <div> 
-            <p className="text-xl py-4"><b>Create Quiz</b></p>
+            <p className="text-xl py-4"><b>{quiz?"Edit Quiz":"Create Quiz"}</b></p>
 
             <div className="py-4">
                 <div className="flex items-center justify-between">

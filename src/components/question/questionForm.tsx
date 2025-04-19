@@ -19,6 +19,7 @@ export default function QuestionForm({saveData, id, send, defaultValues}: Questi
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const [questionType, setQuestionType] = useState(0)
+    const [questionText, setQuestionText] = useState("")
 
     useEffect(()=>{
         if (send) {
@@ -33,12 +34,10 @@ export default function QuestionForm({saveData, id, send, defaultValues}: Questi
         const keys = Object.keys(defaultValues)
         for(let i = 0; i < keys.length; i++ ) {
             const key = keys[i]
-            const ele = document.getElementById(key)
-            if (ele) {
-                ele.value = defaultValues[key]
-                if (key == "questionTypeDropdown") {
-                    setQuestionType(parseInt(ele.value))
-                }
+            if (key == "questionTypeDropdown") {
+                setQuestionType(parseInt(defaultValues[key]))
+            } else if (key == "questionText") {
+                setQuestionText(defaultValues[key])
             }
         }
     },[defaultValues])
@@ -57,7 +56,7 @@ export default function QuestionForm({saveData, id, send, defaultValues}: Questi
     <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             </div>
             <form id={"form"+id} className="space-y-6" action={onSumbit}>
-                <Dropdown id="questionTypeDropdown" title="Question Type" onChange={typeChange}
+                <Dropdown defaultValue={questionType} id="questionTypeDropdown" title="Question Type" onChange={typeChange}
                     options={[{
                         value: "0",
                         text: "Short Response"
@@ -65,17 +64,13 @@ export default function QuestionForm({saveData, id, send, defaultValues}: Questi
                     {
                         value: "1",
                         text: "Multiple Choice"
-                    },
-                    {
-                        value: "2",
-                        text: "Select All"
                     }]}></Dropdown>
             <div>
                 <label htmlFor="questionText" className="block text-sm/6 font-medium text-gray-900">
                     Question Text
                 </label>
                 <div className="mt-2">
-                    <input id="questionText" name="questionText" type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></input>
+                    <input defaultValue={questionText} id="questionText" name="questionText" type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></input>
                 </div>
             </div>
             <hr></hr>
