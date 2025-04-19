@@ -7,7 +7,7 @@ import { assignQuiz } from "@/lib/actions"
 import { buttonVariants, Button } from "../ui/button";
 import { useParams } from 'next/navigation'
 import Link from "next/link"
-import TakeQuestion from "../takeQuestion";
+import TakeQuestion from "../question/takeQuestion";
 import { authClient } from "@/lib/auth-client";
 import {v4 as uuidv4 } from "uuid";
 

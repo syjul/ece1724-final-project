@@ -24,9 +24,6 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Prisma } from "@prisma/client"
 import PieChart from "@/components/ui/pieChart"
-import { GetObjectOutput } from "aws-sdk/clients/s3"
-import { AWSError } from "aws-sdk"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function ViewQuizAnalysis() {
@@ -36,6 +33,8 @@ export default function ViewQuizAnalysis() {
     const [questionData, setQuestionData] = useState([])
     const [quiz, setQuiz] = useState<Prisma.Quiz>()
     const [isLoading, setIsLoading] = useState(true)
+    const [fullTotal, setFullTotal] = useState(0)
+    const [fullSum, setFullSum] = useState(0)
     const params = useParams<{id: string}>()
 
     const getResponses = (id:number) => {
@@ -77,6 +76,8 @@ export default function ViewQuizAnalysis() {
 
     const unravelQuestionData = (quiz: Prisma.Quiz, responseData) => {
         let questionData = []
+        let totals = 0
+        let sums = 0
         for(let i = 0; i < quiz.questions.length; i++) {
             let q = {}
             const question = quiz.questions[i]
@@ -118,6 +119,12 @@ export default function ViewQuizAnalysis() {
                                 choice.isCorrect = true
                                 break
                         }
+                    } else if (ch[ch.length-1] == "correct") {
+                        const choice = {
+                            isCorrect:true,
+                            value:data[key]
+                        }
+                        choices.push(choice)
                     }
                 }
             }
@@ -146,30 +153,63 @@ export default function ViewQuizAnalysis() {
                 
                 var pieChartData = []
                 const entries = Object.entries(resData)
+                let total = 0
+                let sum = 0
                 for (let i = 0; i < entries.length; i++) {
                     var qrd = {}
                     qrd["key"] = entries[i][0].toString()
                     qrd["value"] = entries[i][1]
                     qrd["fill"] = colors[i%6]
                     pieChartData.push(qrd)
+
+                    const val = q.choices.find((r)=>{return r.key.split("-")[2] === entries[i][0].toString()})
+                    if (val) {
+                        total += entries[i][1]
+                        if (val.isCorrect) {
+                            sum += entries[i][1]
+                        }
+                    }
                 }
+                q.total = total
+                q.sum = sum
                 q.pieChartData = pieChartData
+                totals += total
+                sums += sum
             } else if (question.type === 0) {
-                let responses = {}
+                let responses = []
+                let total = 0
+                let sum = 0
+                let correctRes = ""
+                if (choices.length >= 1) {
+                    correctRes = choices[0].value
+                }
                 for (let i = 0; i < responseData.length; i++) {
                     const res = JSON.parse(responseData[i].response)
                     const rd = Object.keys(res)[0].split("-")
                     const qid = rd[rd.length-1]
                     if (parseInt(qid) === q.id) {
                         const uid = responseData[i].user.name
-                        responses[uid] = Object.values(res)[0]
+                        responses.push([uid, Object.values(res)[0]])
+                        if (correctRes != "") {
+                            total += 1
+                            if (correctRes == Object.values(res)[0]) {
+                                sum += 1
+                            }
+                        }
                     }
+                    q.total = total
+                    q.sum = sum
+                    totals += total
+                    sums += sum
                 }
-                q.responses = Object.entries(responses)
+                q.responses = responses
             }
                 
             questionData.push(q)
         }
+        console.log(questionData)
+        setFullTotal(totals)
+        setFullSum(sums)
         setQuestionData(questionData)
     }
 
@@ -200,6 +240,7 @@ export default function ViewQuizAnalysis() {
                         </CardHeader>
                         <CardFooter className="flex-col items-start gap-1 text-sm">
                         <div className="line-clamp-1 flex gap-2 font-medium">
+                            {fullTotal != 0?"Percent Correct: " + ((fullSum/fullTotal)*100.0).toFixed(2) + "%":""}
                             </div>
                         </CardFooter>
                     </Card>
@@ -224,24 +265,30 @@ export default function ViewQuizAnalysis() {
                     {questionData.map((q) => {
                         return (
                             <div key={q.id}>
-                                {q.type === 1? (<PieChart name={q.text} config={q.config} data={q.pieChartData}></PieChart>):
+                                {q.type === 1? (<PieChart name={q.text} config={q.config} data={q.pieChartData} footer={q.total != 0?"Percent Correct: "+((q.sum/q.total)*100.0).toFixed(2)+"%":""}></PieChart>):
                                 (<div>
-                                    {q.type === 0?(<Table>
-                                    <TableCaption>{q.text}</TableCaption>
-                                    <TableHeader>
-                                        <TableRow>
-                                        <TableHead>User</TableHead>
-                                        <TableHead className="text-right">Response</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {q.responses.map((r)=>{return (
-                                            <TableRow>
-                                            <TableCell>{r[0]}</TableCell>
-                                            <TableCell className="text-right">{r[1]}</TableCell>
-                                            </TableRow>)})}
-                                    </TableBody>
-                                    </Table>)
+                                    {q.type === 0?(
+                                    <Card className="flex flex-col">
+                                        <CardHeader className="items-center pb-0">
+                                            <CardTitle>{q.text}</CardTitle>
+                                        </CardHeader>
+                                        <Table>
+                                            <TableCaption>{q.total != 0?"Percent Correct: "+((q.sum/q.total)*100.0).toFixed(2)+"%":""}</TableCaption>
+                                            <TableHeader>
+                                                <TableRow>
+                                                <TableHead>User</TableHead>
+                                                <TableHead className="text-right">Response</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {q.responses.map((r)=>{return (
+                                                    <TableRow>
+                                                    <TableCell>{r[0]}</TableCell>
+                                                    <TableCell className="text-right">{r[1]}</TableCell>
+                                                    </TableRow>)})}
+                                            </TableBody>
+                                        </Table>
+                                    </Card>)
                                 : (<p>Not Implemented</p>)}</div>)}
                                 </div>)
                             }

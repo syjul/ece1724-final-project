@@ -1,5 +1,15 @@
+# Final Project Report
+## Team Information
+Name: Stephen Lucas
+
+Email Address: stephen.lucas@mail.utoronto.ca
+
+Student Number: 1011819089
+
+## Table of Contents
 - [Final Project Report](#final-project-report)
   - [Team Information](#team-information)
+  - [Table of Contents](#table-of-contents)
   - [Motivation](#motivation)
   - [Objectives](#objectives)
   - [Technical Stack](#technical-stack)
@@ -15,14 +25,6 @@
   - [Individual Contributions](#individual-contributions)
   - [Lessions Learned and Concluding Remarks](#lessions-learned-and-concluding-remarks)
   - [Video Demo](#video-demo)
-
-# Final Project Report
-## Team Information
-Name: Stephen Lucas
-
-Email Address: stephen.lucas@mail.utoronto.ca
-
-Student Number: 1011819089
 
 ## Motivation
 As employee training evolves from purely online formats to formats utilizing technologies like AR/VR and other offline tools, the ability to judge the effectiveness of this training is hindered. Companies will often adopt a learning management system (LMS) in order to simply give quizzes or surveys to their employees. However, these typically offer much more functionality than a simple survey service and are therefore much more expensive. In order to offer an alternative, this project was created.

@@ -62,15 +62,17 @@ interface PieChartData {
 interface PieChartProps {
   name: string,
   config:ChartConfig,
-  data: PieChartData[]
+  data: PieChartData[],
+  footer: String
 }
 
-export default function Component({name, config, data}: PieChartProps) {
+export default function Component({name, config, data, footer}: PieChartProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>{name}</CardTitle>
       </CardHeader>
+      <CardFooter>{footer}</CardFooter>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={config}
