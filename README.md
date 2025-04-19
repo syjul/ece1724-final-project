@@ -1,4 +1,22 @@
-# Final Project Report:
+- [Final Project Report](#final-project-report)
+  - [Team Information](#team-information)
+  - [Motivation](#motivation)
+  - [Objectives](#objectives)
+  - [Technical Stack](#technical-stack)
+  - [Features](#features)
+  - [User Guide](#user-guide)
+    - [Manage Users](#manage-users)
+    - [Manage Groups](#manage-groups)
+    - [Manage Quizzes](#manage-quizzes)
+  - [Development Guide](#development-guide)
+    - [Environment setup and configuration](#environment-setup-and-configuration)
+    - [Database initialization](#database-initialization)
+    - [Cloud storage configuration](#cloud-storage-configuration)
+  - [Individual Contributions](#individual-contributions)
+  - [Lessions Learned and Concluding Remarks](#lessions-learned-and-concluding-remarks)
+  - [Video Demo](#video-demo)
+
+# Final Project Report
 ## Team Information
 Name: Stephen Lucas
 
