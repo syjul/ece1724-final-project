@@ -19,10 +19,16 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+    const [unavailable, setUnavailable] = useState(false);
 
     useEffect(()=>{
         if (quiz) {
             setLoading(false)
+            if (quiz.expiresAt) {
+                if (quiz.expiresAt < Date.now()) {
+                    setUnavailable(true)
+                }
+            }
         }
     },[quiz])
 
@@ -93,7 +99,7 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                                     question["correctResponsePattern"] = [
                                         value
                                     ]
-                                } else {
+                                } else if (question.type == 1) {
                                     console.log(question["correctResopnsePattern"])
                                     question["correctResopnsePattern"] = question["correctResopnsePattern"]?
                                         question["correctResopnsePattern"].push(choiceText[ks[ks.length-1]]):[choiceText[ks[ks.length-1]]]
@@ -162,29 +168,32 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
 
     return(
         <div>
-        {
-        !loading?(
-            <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">{quiz.name}</h2>
-                    </div>
-                    <form className="space-y-6" action={handleSaveQuiz}>
-                        {quiz?.questions.map((question)=>{return (
-                            <div key={question.id}>
-                                <TakeQuestion question={question}></TakeQuestion>
-                            </div>
-                        )})}
+            {unavailable?<p>Quiz is expired</p>:(
+                <div>
+            {
+            !loading?(
+                <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+                    <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                            <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">{quiz.name}</h2>
+                        </div>
+                        <form className="space-y-6" action={handleSaveQuiz}>
+                            {quiz?.questions.map((question)=>{return (
+                                <div key={question.id}>
+                                    <TakeQuestion question={question}></TakeQuestion>
+                                </div>
+                            )})}
 
-                        {error ? <p className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">{error}</p>:<></>}
-                        {message ? <p className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400">{message}</p>:<></>}
-                        <Button type="submit" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            Save
-                        </Button>
-                    </form>
+                            {error ? <p className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">{error}</p>:<></>}
+                            {message ? <p className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400">{message}</p>:<></>}
+                            <Button type="submit" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Save
+                            </Button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        ):(<p>Loading quiz..</p>)}
+            ):(<p>Loading quiz..</p>)}
+            </div>)}
         </div>
     )
 }

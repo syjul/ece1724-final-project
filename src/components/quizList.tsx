@@ -45,8 +45,8 @@ export default function QuizList(props : QuizListProps ) {
                                 <td>{q.name}</td>
                                 {props.manage?props.analysis?(<td><Link className={buttonVariants({variant:"outline"})} href={"/quizzes/"+q.id+"/view"}>View Analitics</Link></td>)
                                 :(<td><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/assignments"}>Assign</Link><Link className={buttonVariants({variant:"outline"})} href={"/manage/quizzes/"+q.id+"/edit"}>Edit</Link><Button onClick={()=>{deleteQuizContext(q.id)}} className="text-red-800 bg-red-50">Delete</Button></td>
-                                ):<td><Link className={buttonVariants({variant:"outline"})} href={"/quizzes/"+q.id+"/take"}>Take Quiz</Link></td>}
-                                <td>{q.expiresAt?q.expiresAt.toLocaleString():"No expiration"}</td>
+                                ):<td>{q.expiresAt?(Date.now()>q.expiresAt?<p>Unavailable</p>:<Link className={buttonVariants({variant:"outline"})} href={"/quizzes/"+q.id+"/take"}>Take Quiz</Link>):<Link className={buttonVariants({variant:"outline"})} href={"/quizzes/"+q.id+"/take"}>Take Quiz</Link>}</td>}
+                                <td>{q.expiresAt?(Date.now()>q.expiresAt?"Expired":q.expiresAt.toLocaleString()):"No expiration"}</td>
                             </tr>)})
                     }
                 </tbody>

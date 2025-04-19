@@ -168,6 +168,12 @@ export const getQuizzes = async (manage: boolean) => {
             id: session.user.id
           }
         }
+      },
+      orderBy: {
+        expiresAt: {
+          sort: "asc",
+          nulls: "last"
+        }
       }
     })
   }
