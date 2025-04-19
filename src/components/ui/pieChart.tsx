@@ -72,7 +72,6 @@ export default function Component({name, config, data, footer}: PieChartProps) {
       <CardHeader className="items-center pb-0">
         <CardTitle>{name}</CardTitle>
       </CardHeader>
-      <CardFooter>{footer}</CardFooter>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={config}
@@ -96,6 +95,11 @@ export default function Component({name, config, data, footer}: PieChartProps) {
           </PieChart>
         </ChartContainer>
       </CardContent>
+      <CardFooter>
+        <div className="line-clamp-1 flex gap-2 font-medium">
+          {footer}
+        </div>
+      </CardFooter>
     </Card>
   )
 }

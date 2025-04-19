@@ -387,3 +387,44 @@ export const getFile = async (name: string) => {
   
   return body
 };
+
+export const getComments = async (quizID: number) => {
+  return prisma.comment.findMany(
+    {
+      where: {
+        quiz: {
+          id : quizID
+        }
+      },
+      include: {
+        quiz: true,
+        user: true
+      }
+    }
+  )
+}
+
+export const postComment = async (quizID: number, comment: string) => {
+  const sess = await getSession(true)
+  if (!sess) {
+    throw new Error("User must be logged in to post comment")
+  }
+
+  return prisma.comment.create(
+    {
+      data: {
+        comment: comment,
+        user: {
+          connect: {
+            id: sess.user.id
+          }
+        }, 
+        quiz: {
+          connect: {
+            id: quizID
+          }
+        }
+      }
+    }
+  )
+}

@@ -25,6 +25,7 @@ model User {
 
   isManager Boolean
   Answer    Answer[]
+  Comment   Comment[]
 
   @@unique([username])
   @@map("user")
@@ -91,6 +92,7 @@ model Quiz {
   groups    Group[]
   users     User[]
   expiresAt DateTime?
+  Comment   Comment[]
 
   @@unique([name])
 }
@@ -112,4 +114,13 @@ model Answer {
   userId     String
   sessionID  String   @default(uuid())
   questionId Int
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  quiz    Quiz?  @relation(fields: [quizId], references: [id])
+  quizId  Int?
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  comment String
 }

@@ -18,8 +18,15 @@ import {
     TableRow,
   } from "@/components/ui/table"
 
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover"
+
+import {v4 as uuidv4} from "uuid"
 import Navbar from "@/components/navbar"
-import { getQuizResponses, getQuiz, getFile } from "@/lib/actions"
+import { getQuizResponses, getQuiz, getFile, getComments, postComment } from "@/lib/actions"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Prisma } from "@prisma/client"
@@ -35,27 +42,42 @@ export default function ViewQuizAnalysis() {
     const [isLoading, setIsLoading] = useState(true)
     const [fullTotal, setFullTotal] = useState(0)
     const [fullSum, setFullSum] = useState(0)
+    const [comments, setComments] = useState([])
+
     const params = useParams<{id: string}>()
 
     const getResponses = (id:number) => {
-        getQuizResponses(id).then((r)=>{
-            getQuiz(id).then((q)=>{
-                setResponses(r)
-                setQuiz(q)
-                console.log(r)
-                unravelQuestionData(q, r)
-                setIsLoading(false)
+        getCommentsFromAPI(id).then(()=>{
+            getQuizResponses(id).then((r)=>{
+                getQuiz(id).then((q)=>{
+                    setResponses(r)
+                    setQuiz(q)
+                    console.log(r)
+                    unravelQuestionData(q, r)
+                    setIsLoading(false)
 
-                let sessIDS = []
-                for (let i = 0; i < r.length; i++) {
-                    const idx = sessIDS.find((s)=>{return s[1]===r[i].sessionID})
-                    if (!idx) {
-                        sessIDS.push([r[i].user.name,r[i].sessionID])
+                    let sessIDS = []
+                    for (let i = 0; i < r.length; i++) {
+                        const idx = sessIDS.find((s)=>{return s[1]===r[i].sessionID})
+                        if (!idx) {
+                            sessIDS.push([r[i].user.name,r[i].sessionID])
+                        }
                     }
-                }
-                setSessionIDs(sessIDS)
+                    setSessionIDs(sessIDS)
+                })
             })
         })
+    }
+
+    const getCommentsFromAPI = async (quizID: number) => {
+        const comments = await getComments(quizID)
+        setComments(comments)
+    }
+
+    const postCommentFromAPI = (fd: FormData) => {
+        const comment = fd.get("comment").toString()
+        postComment(quiz.id, comment)
+        setComments([...comments,comment])
     }
 
     const downloadFile = (sessID:string) => {
@@ -227,11 +249,47 @@ export default function ViewQuizAnalysis() {
             {isLoading?<p>Loading responses...</p>: (
             <div>
                 <Navbar activeTab={0}/>
+                <div>
                 <b className="py-8 px-4">{quiz.name}</b>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline">
+                            Comments
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                        <div>
+                            {comments.map((c)=>{ return (
+                                <div key={c.id} className="grid gap-4">
+                                    <div className="space-y-4">
+                                        <h4 className="font-medium leading-none">{c.comment}</h4>
+                                        <p className="text-sm">
+                                            {c.user.name}
+                                        </p>
+                                    </div>
+                                    <hr></hr>
+                                </div>
+                                )}
+                            )}
+
+                            <div className="grid gap-4">
+                                <div className="space-y-2">
+                                    <form action={postCommentFromAPI}>
+                                        <input className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" placeholder="Add comment" name="comment" id="comment" key="comment"></input>
+                                        <Button>Post</Button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </PopoverContent>
+                </Popover>
+                </div>
                 <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
                     <Card className="@container/card">
                         <CardHeader className="relative">
-                        <CardDescription>Total Responses</CardDescription>
+                        <CardDescription>
+                            Total Responses
+                        </CardDescription>
                         <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
                             {sessionIDs.length}
                         </CardTitle>
@@ -255,9 +313,9 @@ export default function ViewQuizAnalysis() {
                     </TableHeader>
                     <TableBody>
                         {sessionIDs.map((s)=>{return (
-                            <TableRow>
-                            <TableCell>{s[0]}</TableCell>
-                            <TableCell className="text-right"><Button onClick={()=>{downloadFile(s[1])}}>{s[1]}</Button></TableCell>
+                            <TableRow key={s[0]+s[1]}>
+                                <TableCell>{s[0]}</TableCell>
+                                <TableCell className="text-right"><Button onClick={()=>{downloadFile(s[1])}}>{s[1]}</Button></TableCell>
                             </TableRow>)})}
                     </TableBody>
                     </Table>
@@ -282,9 +340,9 @@ export default function ViewQuizAnalysis() {
                                             </TableHeader>
                                             <TableBody>
                                                 {q.responses.map((r)=>{return (
-                                                    <TableRow>
-                                                    <TableCell>{r[0]}</TableCell>
-                                                    <TableCell className="text-right">{r[1]}</TableCell>
+                                                    <TableRow key={uuidv4()}>
+                                                        <TableCell>{r[0]}</TableCell>
+                                                        <TableCell className="text-right">{r[1]}</TableCell>
                                                     </TableRow>)})}
                                             </TableBody>
                                         </Table>
