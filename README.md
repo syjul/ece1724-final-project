@@ -24,6 +24,7 @@ Student Number: 1011819089
     - [Cloud storage configuration](#cloud-storage-configuration)
   - [Individual Contributions](#individual-contributions)
   - [Lessions Learned and Concluding Remarks](#lessions-learned-and-concluding-remarks)
+    - [Limitations and Deviation from Proposal](#limitations-and-deviation-from-proposal)
   - [Video Demo](#video-demo)
 
 ## Motivation
@@ -93,6 +94,8 @@ npm run init
 to set up the default user. The default user has the username "administrator" and password "administrator". Once the user is created, log in as the user and change the password through the manage users interface.
 
 ### Cloud storage configuration
+The cloud storage provider used is Amazon's AWS S3 service. In order to configure this, you will need an AWS service account.
+
 The .env file will also need the following properties:
 
 - AWS_BUCKET_NAME - Name of S3 bucket
@@ -104,12 +107,17 @@ The .env file will also need the following properties:
 As this was a solo project, all contributions were made by myself, Stephen Lucas.  The contributions were made over the course of a couple of weeks and amounts to a few thousand lines of code across over 30+ files.
 
 ## Lessions Learned and Concluding Remarks
+
 This project allowed me to learn many things from simple javascript form issues to complex react state management quirks. Setting up and processing complicated forms for quiz management allowed me to realize the intricacies of forms, such as checkboxes not submitting unless they are checked as an example. There were quite a few issues that arose from problems such as this that complicated the form process.
 
 Additionally, making sure child components wouldn't rerender react parents on state changes made me realize the importance of properly formatting a component heirarchy. Being able to utilize the same component to render in different contexts was also a learning experience and a challenge to implement in order to create reusable code.
 
 The importance of typescript in ensuring code is robust was very apparent in development as well. Ensuring prop types and variable accesses were correct allows for a more streamline development experience with less time debugging javascript issues. Without typescript, and without learning how to utilize it properly, this project would have taken quite a bit more time debugging and developing. Unfortunately, I was not able to fully take advantage of typescript by ensuring there were no typescript errors, as I ran out of time to clean up the code entirely. I would have liked to have spent more time on increasing code quality in this regard.
 
+### Limitations and Deviation from Proposal
 
+The implementation largely stuck to the initial project proposal with a few different changes as the project was implemented. Notably, the proposal indicated a stack of Node.js and Express.js would likely be used. This was the case for an initial implementation, but after learning more about Next.js through the class assignments, I realized that I would have more to learn from an implementation in Next.js instead of a more traditional split backend/frontend structure. Indeed, swapping to Next.js and modifying the functionality to revolve around this framework allowed me to recognize the benefits and drawbacks of an all in one approach.
+
+Overall, the project was very beneficial as a learning experience.
 
 ## Video Demo
