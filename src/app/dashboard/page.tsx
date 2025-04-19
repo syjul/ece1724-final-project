@@ -19,10 +19,10 @@ export default function Dashboard() {
     try {
       const sess = await authClient.getSession()
       if (!sess.data || sess.error) {
-        // error
+        window.location.href = "/"
       } else {
         setUser(sess.data.user)
-        if (user.isManager) {
+        if (sess.data.user.isManager) {
           const q = await getQuizzes(true)
           setManageQuizzes(q)
         }
@@ -46,7 +46,7 @@ export default function Dashboard() {
         <div>
           <Navbar activeTab={0}/>
           <Card title="Available Quizzes" content={<QuizList manage={false} quizzes={quizzes}/>} />
-          {user.isManager?<Card title="Quiz Analytics" content={<QuizList manage={true} analysis={true} quizzes={quizzes}/>} />:<></>}
+          {user.isManager?<Card title="Quiz Analytics" content={<QuizList manage={true} analysis={true} quizzes={manageQuizzes}/>} />:<></>}
         </div>
       }
     </div>

@@ -159,6 +159,12 @@ export const getQuizzes = async (manage: boolean) => {
 
   if (manage) {
     return prisma.quiz.findMany({
+      orderBy: {
+        expiresAt: {
+          sort: "asc",
+          nulls: "last"
+        }
+      }
     })
   } else {
     return prisma.quiz.findMany({
