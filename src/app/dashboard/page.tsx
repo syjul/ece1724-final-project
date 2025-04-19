@@ -10,6 +10,7 @@ import Card from "@/components/ui/card_old"
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<String>()
   const [quizzes, setQuizzes] = useState([])
   const [manageQuizzes, setManageQuizzes] = useState([])
   const [user, setUser] = useState({})
@@ -30,7 +31,7 @@ export default function Dashboard() {
       const q = await getQuizzes(manage)
       setQuizzes(q)
     } catch {
-
+      setError("Error loading dashboard")
     }
     setLoading(false)
   }
@@ -48,6 +49,9 @@ export default function Dashboard() {
           <Card title="Available Quizzes" content={<QuizList manage={false} quizzes={quizzes}/>} />
           {user.isManager?<Card title="Quiz Analytics" content={<QuizList manage={true} analysis={true} quizzes={manageQuizzes}/>} />:<></>}
         </div>
+      }
+      {
+        error? <p>{error}</p>:<></>
       }
     </div>
   );

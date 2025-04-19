@@ -37,6 +37,8 @@ The advanced features include user authentication and authorization by requiring
 
 As a user without management permissions, the flow is simple. After entering your login information, you will be directed to the dashboard where you will have the option to take quizzes assigned to you. Clicking on "Take" will open the quiz interface. Filling out this interface and clicking save will result in your response being saved. Lastly, there is a logout button in the navbar for when you are finished taking quizzes.
 
+Naviagating to the login page without logging out will redirect the user to their dashboard. If the user is not logged in and tries to access pages, they will be redirected to the login page.
+
 As a user with management permissions, you will notice after logging in there are more options in the navbar.
 
 ### Manage Users
@@ -63,6 +65,12 @@ An .env file will need to be created containing the following properties:
 
 ### Database initialization
 Running npx prisma init will create the tables needed for the project as long as the database connection string is set.
+
+Once the database is set up, run
+
+npm run init
+
+to set up the default user. The default user has the username "administrator" and password "administrator". Once the user is created, log in as the user and change the password through the manage users interface.
 
 ### Cloud storage configuration
 The .env file will also need the following properties:

@@ -5,7 +5,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
 import { createUser } from "@/lib/actions"
 import Dropdown from "@/components/ui/dropdown"
-import QuestionType from "../questionType";
+import QuestionType from "./questionType";
 
 interface QuestionFormProps {
     saveData: (id:number, fd: FormData) => void,
