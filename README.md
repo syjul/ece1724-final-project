@@ -7,15 +7,17 @@ Email Address: stephen.lucas@mail.utoronto.ca
 Student Number: 1011819089
 
 ## Motivation
-As employee training evolves from purely online formats to formats utilizing technologies like AR/VR and other offline tools, the ability to judge the effectiveness of this training is hindered. Companies essentially have no option but to adopt a learning management system (LMS) in order to simply give quizzes or surveys to their employees. These typically offer much more functionality than a simple survey service and are therefore much more expensive.
+As employee training evolves from purely online formats to formats utilizing technologies like AR/VR and other offline tools, the ability to judge the effectiveness of this training is hindered. Companies will often adopt a learning management system (LMS) in order to simply give quizzes or surveys to their employees. However, these typically offer much more functionality than a simple survey service and are therefore much more expensive. In order to offer an alternative, this project was created.
 
 ## Objectives
 
 The goal of this project is to provide a solution in the form of a quiz/survey service that can be connected to outside learning solutions through industry standard XAPI statements. This would allow companies to be able to evaluate training effectiveness without having to subscribe to a large LMS service.
 
+Providing basic results viewing allows users to see a general view of how the survey/quiz was completed. This project does not intend to replace soltuions companies may have adopted for viewing training data, and instead aims to be able to easily integrate with these systems through generated XAPI files.
+
 ## Technical Stack
 
-The project utilizes a Next.js full-stack approach. The data is stored in a PostgreSQL database with prisma ORM integration. The result data is cached in the database for fast reads, but the XAPI statements corresponding to he results are stored on AWS S3. Shadcn, Rechart.js, and Tailwind CSS were utilized in order to simplify UI design.
+The project utilizes a Next.js full-stack approach. The data is stored in a PostgreSQL database with prisma ORM integration. The result data is cached in the database for fast reads, but the XAPI statements corresponding to he results are stored on AWS S3. Additionally, Shadcn, Rechart.js, and Tailwind CSS were utilized in order to simplify UI design.
 
 ## Features
 
@@ -71,13 +73,15 @@ The .env file will also need the following properties:
 - AWS_ACCESS_KEY - Access key for user with permissions to the bucket
 
 ## Individual Contributions
-As this was a solo project, all contributions were made by myself, Stephen Lucas.
+As this was a solo project, all contributions were made by myself, Stephen Lucas.  The contributions were made over the course of a couple of weeks and amounts to a few thousand lines of code across over 30+ files.
 
 ## Lessions Learned and Concluding Remarks
 This project allowed me to learn many things from simple javascript form issues to complex react state management quirks. Setting up and processing complicated forms for quiz management allowed me to realize the intricacies of forms, such as checkboxes not submitting unless they are checked as an example. There were quite a few issues that arose from problems such as this that complicated the form process.
 
-Additionally, making sure child components wouldn't rerender react parents on state changes made me realize the importance of properly formatting a component heirarchy. 
+Additionally, making sure child components wouldn't rerender react parents on state changes made me realize the importance of properly formatting a component heirarchy. Being able to utilize the same component to render in different contexts was also a learning experience and a challenge to implement in order to create reusable code.
 
-The importance of typescript in ensuring code is robust was very apparent in development as well. Ensuring prop types and variable accesses were correct allows for a more streamline development experience with less time debugging javascript issues. Without typescript, and without learning how to utilize it properly, this project would have taken quite a bit more time debugging and developing.
+The importance of typescript in ensuring code is robust was very apparent in development as well. Ensuring prop types and variable accesses were correct allows for a more streamline development experience with less time debugging javascript issues. Without typescript, and without learning how to utilize it properly, this project would have taken quite a bit more time debugging and developing. Unfortunately, I was not able to fully take advantage of typescript by ensuring there were no typescript errors, as I ran out of time to clean up the code entirely. I would have liked to have spent more time on increasing code quality in this regard.
+
+
 
 ## Video Demo
