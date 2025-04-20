@@ -169,11 +169,26 @@ export const getQuizzes = async (manage: boolean) => {
   } else {
     return prisma.quiz.findMany({
       where: {
-        users: {
-          some: {
-            id: session.user.id
+        OR: [
+          {
+            users: {
+              some: {
+                id: session.user.id
+              }
+            }
+          },
+          {
+            groups: {
+              some: {
+                users: {
+                  some: {
+                    id: session.user.id
+                  }
+                }
+              }
+            }
           }
-        }
+        ]
       },
       orderBy: {
         expiresAt: {
