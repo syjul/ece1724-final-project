@@ -47,6 +47,7 @@ export default function Dashboard() {
         <div>
           <Navbar activeTab={0}/>
           <Card title="Available Quizzes" content={<QuizList manage={false} quizzes={quizzes}/>} />
+          <div className="py-4"></div>
           {user.isManager?<Card title="Quiz Analytics" content={<QuizList manage={true} analysis={true} quizzes={manageQuizzes}/>} />:<></>}
         </div>
       }

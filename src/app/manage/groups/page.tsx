@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { getGroups } from "@/lib/actions"
 import Navbar from "@/components/navbar";
-import Card from "@/components/ui/card" 
+import Card from "@/components/ui/card_old" 
 import  Link  from "next/link"
 import { buttonVariants } from "@/components/ui/button";
 import GroupList from "@/components/group/groupList";

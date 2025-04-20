@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense } from "react";
-import CreateQuiz from "@/components/quiz/createQuiz";
+import CreateGroup from "@/components/group/createGroup";
 import Navbar from "@/components/navbar";
 
 
@@ -9,8 +9,8 @@ import Navbar from "@/components/navbar";
 export default function User() {
   return (
     <Suspense>
-      <Navbar activeTab={3} />
-      <CreateQuiz />
+      <Navbar activeTab={2} />
+      <CreateGroup />
     </Suspense>
   );
 }
