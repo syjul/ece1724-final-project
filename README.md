@@ -116,8 +116,12 @@ The importance of typescript in ensuring code is robust was very apparent in dev
 
 ### Limitations and Deviation from Proposal
 
-The implementation largely stuck to the initial project proposal with a few different changes as the project was implemented. Notably, the proposal indicated a stack of Node.js and Express.js would likely be used. This was the case for an initial implementation, but after learning more about Next.js through the class assignments, I realized that I would have more to learn from an implementation in Next.js instead of a more traditional split backend/frontend structure. Indeed, swapping to Next.js and modifying the functionality to revolve around this framework allowed me to recognize the benefits and drawbacks of an all in one approach.
+The implementation largely stuck to the initial project proposal with a few different changes as the project was implemented. Notably, the proposal indicated a stack of Node.js and Express.js would likely be used. This was the case for an initial implementation, but after learning more about Next.js through the class assignments, I realized that I wo
+
+uld have more to learn from an implementation in Next.js instead of a more traditional split backend/frontend structure. Indeed, swapping to Next.js and modifying the functionality to revolve around this framework allowed me to recognize the benefits and drawbacks of an all in one approach.
 
 Overall, the project was very beneficial as a learning experience.
 
 ## Video Demo
+
+https://github.com/user-attachments/assets/1d78bec0-af52-4316-ac1b-96fe052335f1
