@@ -46,15 +46,7 @@ export default function EditGroup() {
                 return
             }
 
-            const usersFD = formData.get("users")
-            let users = ""
-            if (usersFD) {
-                users = usersFD.toString()
-            }
-
-            let userList = users.split(",")
-
-            const result = await editGroup(parseInt(params.id), name, userList)
+            const result = await editGroup(parseInt(params.id), name, userIDS)
             setMessage("Group created succesfully")
             window.location.href="/manage/groups"
         } 

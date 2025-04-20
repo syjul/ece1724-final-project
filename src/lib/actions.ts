@@ -113,7 +113,7 @@ export const editGroup = async (id: number, name: string, users: string[]) => {
     data: {
       name: name,
       users: {
-        connect: users.map((id) => ({id: id}))
+        set: users.map((id) => ({id: id}))
       }
     },
     where: {
@@ -155,7 +155,7 @@ export const getGroups = async (limit: number, offset: number) => {
 }
 
 export const getQuizzes = async (manage: boolean) => {
-  const session = await getSession(true)
+  const session = await getSession(manage)
 
   if (manage) {
     return prisma.quiz.findMany({
@@ -207,10 +207,10 @@ export const assignQuiz = async (id: number, groups: string[], users: string[]) 
   return prisma.quiz.update({
     data: {
       users: {
-        connect: users.map((id) => ({id: id}))
+        set: users.map((id) => ({id: id}))
       },
       groups: {
-        connect: groups.map((id)=>({id: parseInt(id)}))
+        set: groups.map((id)=>({id: parseInt(id)}))
       }
     },
     where: {

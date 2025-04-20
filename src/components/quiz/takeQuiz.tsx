@@ -156,7 +156,10 @@ export default function TakeQuiz({quiz}:TakeQuizProps) {
                     }
                 }
                 const statementStr = JSON.stringify(statements)
-                uploadFile(sessID, statementStr)
+                uploadFile(sessID, statementStr).then(()=>{
+                    window.location.href="/dashboard"
+                }
+                )
                 //window.location.href = "/dashboard"
             }
             catch (e) {

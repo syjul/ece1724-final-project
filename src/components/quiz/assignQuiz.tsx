@@ -49,29 +49,7 @@ export default function AssignQuiz({quiz}:AssignQuizProps) {
                 setError("")
                 setMessage("")
     
-                const usersFD = fd.get("users")
-                let users = ""
-                if (usersFD) {
-                    users = usersFD.toString()
-                }
-    
-                let userList = users.split(",")
-                if (users === "") {
-                    userList = []
-                }
-
-                const groupsFD = fd.get("groups")
-                let groups = ""
-                if (groupsFD) {
-                    groups = groupsFD.toString()
-                }
-    
-                let groupList = groups.split(",")
-                if (groups === "") {
-                    groupList = []
-                }
-    
-                const result = await assignQuiz(parseInt(params.id), groupList, userList)
+                await assignQuiz(parseInt(params.id), groupIDS, userIDS)//groupList, userList)
                 setMessage("Quiz assigned succesfully")
                 window.location.href="/manage/quizzes"
             } 
