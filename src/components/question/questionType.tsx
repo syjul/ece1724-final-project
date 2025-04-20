@@ -9,6 +9,7 @@ interface QuestionProps {
 
 export default function QuestionType({questionType, defaultValues} : QuestionProps) {
     let [choices,setChoices] = useState<choice[]>([])
+    let [correctText, setCorrectText] = useState("")
 
     useEffect(()=>{
         const keys = Object.keys(defaultValues)
@@ -20,10 +21,12 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
                 if (!isNaN(id)) {
                     let choice = {}//choices.find((c)=>{c.id == id})
                     let found = false
+                    let idx = 0
                     for (var k = 0; k < choices.length; k++) {
                         if (choices[k].id == id) {
                             choice = choices[k]
                             found = true
+                            idx = k
                             break
                         }
                     }
@@ -31,7 +34,6 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
                         choice = {
                             id: id
                         }
-                        choices.push(choice)
                     }
                     switch(ch[1]) {
                         case "text": 
@@ -41,6 +43,19 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
                             choice.isCorrect = true
                             break
                     }
+                    if (!found) {
+                        choices.push(choice)
+                        idx = choices.length-1
+                    } else {
+                        choices[idx] = choice
+                    }
+                    
+                } else {
+                    if (ch.length>1) {
+                        if (ch[1] == "correct") {
+                            setCorrectText(defaultValues[key])
+                        }
+                    }
                 }
             }
             /*
@@ -49,6 +64,7 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
                 ele.value = defaultValues[key]
             }*/
         }
+        console.log(choices)
         setChoices(choices)
     },[defaultValues])
 
@@ -95,7 +111,7 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
                         </label>
                     </div>
                     <div className="mt-2">
-                        <input placeholder="Leave empty for none" id={"choice-correct"} name={"choice-correct"} type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" ></input>
+                        <input defaultValue={correctText} placeholder="Leave empty for none" id={"choice-correct"} name={"choice-correct"} type="text" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" ></input>
                     </div>
                 </div>
             )
@@ -120,7 +136,7 @@ export default function QuestionType({questionType, defaultValues} : QuestionPro
                                     </label>
                                 </div>
                                 <div className="mt-2">
-                                    <input defaultValue={choice.isCorrect?'on':'off'} id={"choice-correct-"+choice.id} name={"choice-correct-"+choice.id} type="checkbox" className="" ></input>
+                                    <input defaultChecked={choice.isCorrect?true:false} id={"choice-correct-"+choice.id} name={"choice-correct-"+choice.id} type="checkbox" className="" ></input>
                                 </div>
                             </div>
                             <Button type="button" onClick={()=>{removeChoice(choice.id)}}>Remove choice</Button>

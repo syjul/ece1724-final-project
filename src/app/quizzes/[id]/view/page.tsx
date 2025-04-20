@@ -32,6 +32,7 @@ import { useParams } from "next/navigation"
 import { Prisma } from "@prisma/client"
 import PieChart from "@/components/ui/pieChart"
 import { Button } from "@/components/ui/button"
+import { authClient } from "@/lib/auth-client"
 
 export default function ViewQuizAnalysis() {
     const [quizID, setQuizID] = useState(0)
@@ -75,9 +76,20 @@ export default function ViewQuizAnalysis() {
     }
 
     const postCommentFromAPI = (fd: FormData) => {
-        const comment = fd.get("comment").toString()
-        postComment(quiz.id, comment)
-        setComments([...comments,comment])
+        authClient.getSession().then((sess) =>{
+            if (sess.data && !sess.err) {
+                const comment = fd.get("comment").toString()
+                const commentAdd = {
+                    comment: comment,
+                    user: {
+                        name: sess.data.user.name
+                    }
+                }
+                postComment(quiz.id, comment)
+                setComments([...comments,commentAdd])
+            }
+        })
+        
     }
 
     const downloadFile = (sessID:string) => {
@@ -264,7 +276,7 @@ export default function ViewQuizAnalysis() {
                                     <div className="space-y-4">
                                         <h4 className="font-medium leading-none">{c.comment}</h4>
                                         <p className="text-sm">
-                                            {c.user.name}
+                                            {c.user?.name}
                                         </p>
                                     </div>
                                     <hr></hr>

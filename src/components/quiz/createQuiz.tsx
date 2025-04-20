@@ -59,9 +59,13 @@ export default function CreateQuiz({quiz}:CreateQuizProps) {
             const name = document.getElementById("quizName")?.value
             const time = document.getElementById("quizTime")?.value
             if (!quiz) {
-                createQuizWithQuestions(name,time,saveData)
+                createQuizWithQuestions(name,time,saveData).then(()=>{
+                    window.location.href="/manage/quizzes"
+                })
             } else {
-                editQuizWithQuestions(quiz.id,name,time,saveData)
+                editQuizWithQuestions(quiz.id,name,time,saveData).then(()=>{
+                    window.location.href="/manage/quizzes"
+                })
             }
         }
     }
